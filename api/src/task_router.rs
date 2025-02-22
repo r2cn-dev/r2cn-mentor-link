@@ -9,6 +9,7 @@ use entity::{monthly_score, sea_orm_active_enums::TaskStatus, task};
 use sea_orm::Set;
 
 use crate::{
+    email::EmailSender,
     model::{
         score::NewScore,
         task::{CommandRequest, NewTask, SearchTask, Task, UpdateScoreRequest},
@@ -182,6 +183,25 @@ async fn intern_done(
         };
         score_stg.insert_score(new_score.into()).await.unwrap();
     };
+    let stu_stg = state.student_stg();
+    let student = stu_stg
+        .get_student_by_login(&task.mentor_github_login)
+        .await
+        .unwrap();
+    if let Some(student) = student {
+        let mut email_context = tera::Context::new();
+        email_context.insert("new_score", &task.score);
+        // email_context.insert("total_score", );
+        // email_context.insert("task_link", "");
+        email_context.insert("task_title", &task.github_issue_title);
+        let sender = EmailSender::new(
+            "score_count_email.html",
+            "R2CN任务完成",
+            email_context,
+            &student.email,
+        );
+        sender.send();
+    }
     Ok(Json(CommonResult::success(Some(task))))
 }
 

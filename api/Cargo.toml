@@ -20,7 +20,7 @@ sea-orm = { workspace = true, features = [
     "runtime-tokio-native-tls",
     "sqlx-postgres",
 ] }
-axum = { workspace = true, features = ["macros"]}
+axum = { workspace = true, features = ["macros"] }
 tower = { workspace = true }
 tower-http = { workspace = true, features = ["fs", "trace"] }
 tower-cookies = { workspace = true }
@@ -39,3 +39,5 @@ reqwest = { workspace = true, features = ["json"] }
 base64 = { workspace = true }
 rust_xlsxwriter = { workspace = true }
 percent-encoding = { workspace = true }
+lettre = { workspace = true }
+tera = { workspace = true }

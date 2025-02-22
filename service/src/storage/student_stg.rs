@@ -63,6 +63,7 @@ impl StudentStorage {
                 contract_end_date: Set(contract_deadline),
                 create_at: Set(now),
                 update_at: Set(now),
+                email: Set(data.email.unwrap()),
             };
             new_stu.insert(self.get_connection()).await?;
         }

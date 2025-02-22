@@ -14,6 +14,7 @@ pub struct Model {
     pub contract_end_date: Option<Date>,
     pub create_at: DateTime,
     pub update_at: DateTime,
+    pub email: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

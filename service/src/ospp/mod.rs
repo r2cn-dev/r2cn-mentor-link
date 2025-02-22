@@ -15,6 +15,7 @@ pub struct OsppValidateStudentRes {
     pub su_student_name: Option<String>,
     #[serde(alias = "contractDeadline")]
     pub contract_deadline: Option<String>,
+    pub email: Option<String>,
 }
 
 #[derive(PartialEq, Eq, Debug, Clone, Default, Serialize, Deserialize)]
@@ -27,12 +28,10 @@ pub struct ValidateStudentRes {
     pub success: bool,
     pub student_name: Option<String>,
     pub contract_deadline: Option<String>,
+    pub email: Option<String>,
 }
 
-
-pub async fn validate_student(
-    json: ValidateStudent,
-) -> Result<ValidateStudentRes, CommonError> {
+pub async fn validate_student(json: ValidateStudent) -> Result<ValidateStudentRes, CommonError> {
     //call ospp api check status
     let client = reqwest::Client::new();
     let api_host = env::var("OSPP_API_ENDPOINT").unwrap();
@@ -51,13 +50,15 @@ pub async fn validate_student(
             success: data.student_exist,
             student_name: data.su_student_name,
             contract_deadline: data.contract_deadline,
+            email: data.email,
         }),
         Err(err) => {
             tracing::error!("JSON parse error: {}", err);
             Ok(ValidateStudentRes {
                 success: false,
                 student_name: None,
-                contract_deadline: None
+                contract_deadline: None,
+                email: None,
             })
         }
     }

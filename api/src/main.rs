@@ -3,6 +3,7 @@ mod model;
 mod score_router;
 mod student_router;
 mod task_router;
+mod email;
 
 use std::env;
 
