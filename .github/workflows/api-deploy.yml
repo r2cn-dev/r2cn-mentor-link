@@ -42,6 +42,8 @@ jobs:
           docker buildx build \
           -t $IMAGE_BASE:$IMAGE_TAG \
           --push .
+      - name: Wait for image to be available
+        run: sleep 10
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -54,6 +56,6 @@ jobs:
             docker pull public.ecr.aws/m8q5m4u3/r2cn:api-0.1.0-pre-release &&
             docker rm -f r2cn-api || true &&
             docker run -it -d --name r2cn-api --network r2cn-network \
-            -v /root/r2cn-data:/opt/r2cn -p 8000:8000 --restart=always \
+            -p 8000:8000 --restart=always \
             --env-file /home/deploy/.env \
             public.ecr.aws/m8q5m4u3/r2cn:api-0.1.0-pre-release

@@ -29,9 +29,9 @@ fn month_name(date: NaiveDate, lang: Lang) -> String {
 
 // 用 mrml 将 MJML 转换为 HTML
 pub fn render_mjml(template_name: &str, context: &Context) -> Result<String, String> {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push("templates/mjml/*");
-    let tera = Tera::new(path.to_str().unwrap()).map_err(|e| format!("Tera 初始化失败: {}", e))?;
+    let mut base = PathBuf::from(std::env::var("TEMPLATE_DIR").expect("TEMPLATE_DIR not set"));
+    base.push("templates/mjml/*");
+    let tera = Tera::new(base.to_str().unwrap()).map_err(|e| format!("Tera 初始化失败: {}", e))?;
     let mjml_content = tera
         .render(template_name, context)
         .map_err(|e| format!("Tera 渲染失败: {}", e))?;
@@ -48,9 +48,9 @@ pub fn render_mjml(template_name: &str, context: &Context) -> Result<String, Str
 
 /// 创建带有 Content-ID 的内嵌图片附件
 pub fn create_cid_attachment(image_path: &str, cid: &str) -> Result<SinglePart, String> {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push(image_path);
-    let image_data = fs::read(Path::new(&path)).map_err(|e| format!("读取图片失败: {}", e))?;
+    let mut base = PathBuf::from(std::env::var("TEMPLATE_DIR").expect("TEMPLATE_DIR not set"));
+    base.push(image_path);
+    let image_data = fs::read(Path::new(&base)).map_err(|e| format!("读取图片失败: {}", e))?;
 
     let body = Body::new(image_data);
     let content_type_header: header::ContentType = "image/png".parse().unwrap();
@@ -112,9 +112,10 @@ impl EmailSender {
         let render_result = if self.template_name.ends_with(".mjml") {
             render_mjml(&self.template_name, &self.context)
         } else {
-            let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-            path.push("templates/*");
-            Tera::new(path.to_str().unwrap())
+            let mut base =
+                PathBuf::from(std::env::var("TEMPLATE_DIR").expect("TEMPLATE_DIR not set"));
+            base.push("templates/*");
+            Tera::new(base.to_str().unwrap())
                 .map_err(|e| format!("Tera 初始化失败: {}", e))
                 .and_then(|t| {
                     t.render(&self.template_name, &self.context)

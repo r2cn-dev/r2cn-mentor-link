@@ -62,6 +62,7 @@ async fn conference_create(state: State<AppState>) -> Result<(), (StatusCode, &'
     Ok(())
 }
 
+#[allow(dead_code)]
 async fn app_auth() -> Result<AppAuth, Error> {
     let ten_minutes_later = Utc::now() + Duration::minutes(10);
     let expire_time = ten_minutes_later.timestamp();
@@ -155,6 +156,7 @@ async fn account_auth() -> Result<AppAuth, Error> {
     }
 }
 
+#[allow(dead_code)]
 fn calculate_hmac_sha256(key: &[u8], data: &[u8]) -> String {
     let mut mac = Hmac::<Sha256>::new_from_slice(key).expect("Invalid HMAC key length");
 
@@ -165,6 +167,7 @@ fn calculate_hmac_sha256(key: &[u8], data: &[u8]) -> String {
     hex::encode(code_bytes)
 }
 
+#[allow(dead_code)]
 fn generate_random_string() -> String {
     let random_string: String = rand::rng()
         .sample_iter(&Alphanumeric)

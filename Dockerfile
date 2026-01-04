@@ -23,10 +23,10 @@ WORKDIR /opt/r2cn
 
 COPY --from=builder /opt/r2cn/target/release/mentor-link-api /usr/local/bin
 COPY --from=builder /opt/r2cn/target/release/migration /usr/local/bin
+COPY --from=builder /opt/r2cn/api/templates /opt/r2cn/templates
 
 RUN chmod +x /usr/local/bin/mentor-link-api
 RUN chmod +x /usr/local/bin/migration
 
-VOLUME /opt/r2cn
 
 CMD ["/usr/local/bin/mentor-link-api"]
