@@ -75,6 +75,11 @@ async fn is_notification_enabled(state: &AppState, user_id: &str, kind: Notifica
     }
 }
 
+/// 默认发件人地址，可通过环境变量 EMAIL_FROM 配置
+fn from_email() -> String {
+    env::var("EMAIL_FROM").unwrap_or_else(|_| "no-reply@r2cn.dev".to_string())
+}
+
 fn month_name(date: NaiveDate, lang: Lang) -> String {
     match lang {
         Lang::En => date.format("%b").to_string(),
@@ -233,7 +238,7 @@ impl EmailSender {
             .body(html_body);
 
         let mut email_builder = Message::builder()
-            .from("no-reply@r2cn.dev".parse().unwrap())
+            .from(from_email().parse().unwrap())
             .to(self.receivers[0].parse().unwrap())
             .subject(subject);
 
@@ -297,7 +302,7 @@ impl EmailSender {
 
         let body = json!({
             "template_key": template_id,
-            "from": { "address": "no-reply@r2cn.dev" },
+            "from": { "address": from_email() },
             "to": to_list
         });
 
